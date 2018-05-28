@@ -1,4 +1,3 @@
-use std::path::Path;
 use std::io::Write;
 use std::io::Result;
 use std::io::Read;
@@ -48,9 +47,8 @@ impl App {
         let mut contents = String::new();
         self.gitmodules_datafile.read_to_string(&mut contents).unwrap();
         let submodules: Vec<Box<Submodule>> = serde_json::from_str(&contents).unwrap();
+
         println!("{:?}", submodules);
-
-
         for submodule in submodules {
             println!("clone {} from {} to {}",
                      submodule.name, submodule.url, submodule.path);
@@ -62,7 +60,8 @@ impl App {
     pub fn generate_submodules_json_datafile(&mut self) -> Result<()> {
         let mut submodules: Vec<Box<Submodule>> = Vec::new();
 
-        let cfg = Config::open(Path::new("../.git/config")).unwrap();
+        let git_path = self.repo.path().join("/config");
+        let cfg = Config::open(&git_path).unwrap();
 
         let entries = cfg.entries(None).unwrap();
 

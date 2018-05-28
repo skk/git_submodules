@@ -6,7 +6,7 @@ use git_submodules::arguments::parse_args;
 fn main() {
     let matches = parse_args();
     // these should be CLI arguments, not hard-coded
-    let mut _app = App::new("../dotfiles",
+    let mut _app = App::new("../../dotfiles",
                             "./repos.json");
 
     if matches.subcommand_matches("generate_json_file").is_some() {
