@@ -1,0 +1,6 @@
+[package]
+name = "git_submodules"
+version = "0.1.0"
+authors = ["Steven Knight <steven@knight.c>"]
+
+[dependencies]
