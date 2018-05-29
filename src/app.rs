@@ -36,6 +36,7 @@ impl App {
         let gitmodules_datafile = match OpenOptions::new().
             read(true).
             write(true).
+            append(true).
             open(data_filename) {
                 Ok(datafile) => datafile,
                 Err(e) => panic!("failed to init: {}", e),
@@ -92,8 +93,8 @@ impl App {
             }
         }
         let serialized = serde_json::to_string(&submodules).unwrap();
+        info!("serialized {}", serialized);
         self.gitmodules_datafile.write_all(serialized.as_bytes())?;
-
         Ok(())
     }
 }
