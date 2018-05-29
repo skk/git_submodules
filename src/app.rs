@@ -25,6 +25,9 @@ pub struct App {
 
 impl App {
     pub fn new(repo_path: &str, data_filename: &str) -> App {
+        info!("git repo path {}", repo_path);
+        info!("data_filename  {}", data_filename);
+
         let repo = match Repository::init(repo_path) {
             Ok(repo) => repo,
             Err(e) => panic!("failed to init: {}", e),
@@ -48,9 +51,9 @@ impl App {
         self.gitmodules_datafile.read_to_string(&mut contents).unwrap();
         let submodules: Vec<Box<Submodule>> = serde_json::from_str(&contents).unwrap();
 
-        println!("{:?}", submodules);
+        info!("{:?}", submodules);
         for submodule in submodules {
-            println!("clone {} from {} to {}",
+            info!("clone {} from {} to {}",
                      submodule.name, submodule.url, submodule.path);
         }
 
@@ -81,7 +84,7 @@ impl App {
                         path: path.to_string(),
                         url: url.to_string(),
                     });
-                    println!("submodule {:?}", s);
+                    info!("submodule {:?}", s);
                     submodules.push(s);
                 }
             }
