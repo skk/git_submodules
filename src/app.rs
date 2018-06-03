@@ -92,7 +92,7 @@ impl App {
                 }
             }
         }
-        let serialized = serde_json::to_string(&submodules).unwrap();
+        let serialized = serde_json::to_string_pretty(&submodules).unwrap();
         info!("serialized {}", serialized);
         self.gitmodules_datafile.write_all(serialized.as_bytes())?;
         Ok(())

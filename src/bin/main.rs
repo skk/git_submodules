@@ -1,6 +1,11 @@
 extern crate git_submodules;
 extern crate flexi_logger;
 
+#[macro_use]
+extern crate log;
+
+use std::process::{exit};
+
 use git_submodules::app::App;
 use git_submodules::arguments::parse_args;
 
@@ -18,11 +23,34 @@ fn setup_logging(logging_level: &str) {
 
 fn main() {
     let matches = parse_args();
-    setup_logging("info");
+    let repo_datafile = matches.value_of("datafile").unwrap_or("./repos.json");
+    let repo_paths = matches.values_of("repo_paths");
+    let debug = matches.is_present("debug");
 
-    // these should be CLI arguments, not hard-coded
-    let mut _app = App::new("../../dotfiles",
-                            "./repos.json");
+    let log_level = match debug {
+        true => "debug",
+        _ => "info"
+    };
+    setup_logging(log_level);
+
+    if repo_paths.is_none() {
+        warn!("No repo paths provided");
+        exit(1);
+    }
+    let repos: Vec<&str> = repo_paths.unwrap().collect();
+
+    // TODO support multiple repos
+    let repo = repos.iter().nth(0).unwrap();
+
+    info!("repo {:?}", repo);
+    debug!("matches {:?}", matches);
+    debug!("log_level {}", log_level);
+    debug!("debug {}", debug);
+    debug!("repo_datafile {}", repo_datafile);
+    debug!("repos {:?}", repos);
+
+    let mut _app = App::new(repo,
+                            repo_datafile);
 
     if matches.subcommand_matches("generate_json_file").is_some() {
         _app.generate_submodules_json_datafile().unwrap();
