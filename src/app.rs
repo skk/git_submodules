@@ -1,11 +1,11 @@
-use std::io::Write;
-use std::io::Result;
-use std::io::Read;
-use std::fs::OpenOptions;
-use std::fs::File;
 use regex::Regex;
+use std::fs::File;
+use std::fs::OpenOptions;
+use std::io::Read;
+use std::io::Result;
+use std::io::Write;
 
-use git2::{Repository};
+use git2::Repository;
 use serde_json;
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -22,7 +22,6 @@ pub struct App {
     gitmodules_datafile: File,
 }
 
-
 impl App {
     pub fn new(repo_path: &str, data_filename: &str) -> App {
         info!("git repo path {}", repo_path);
@@ -33,13 +32,14 @@ impl App {
             Err(e) => panic!("failed to init: {}", e),
         };
 
-        let gitmodules_datafile = match OpenOptions::new().
-            read(true).
-            write(true).
-            append(true).
-            open(data_filename) {
-                Ok(datafile) => datafile,
-                Err(e) => panic!("failed to init: {}", e),
+        let gitmodules_datafile = match OpenOptions::new()
+            .read(true)
+            .write(true)
+            .append(true)
+            .open(data_filename)
+        {
+            Ok(datafile) => datafile,
+            Err(e) => panic!("failed to init: {}", e),
         };
 
         App {
@@ -49,13 +49,17 @@ impl App {
     }
     pub fn clone_repos(&mut self) -> Result<()> {
         let mut contents = String::new();
-        self.gitmodules_datafile.read_to_string(&mut contents).unwrap();
+        self.gitmodules_datafile
+            .read_to_string(&mut contents)
+            .unwrap();
         let submodules: Vec<Box<Submodule>> = serde_json::from_str(&contents).unwrap();
 
         info!("{:?}", submodules);
         for submodule in submodules {
-            info!("clone {} from {} to {}",
-                     submodule.name, submodule.url, submodule.path);
+            info!(
+                "clone {} from {} to {}",
+                submodule.name, submodule.url, submodule.path
+            );
         }
 
         Ok(())

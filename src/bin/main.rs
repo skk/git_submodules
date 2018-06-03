@@ -1,15 +1,15 @@
-extern crate git_submodules;
 extern crate flexi_logger;
+extern crate git_submodules;
 
 #[macro_use]
 extern crate log;
 
-use std::process::{exit};
+use std::process::exit;
 
 use git_submodules::app::App;
 use git_submodules::arguments::parse_args;
 
-use flexi_logger::{detailed_format};
+use flexi_logger::detailed_format;
 use flexi_logger::Logger;
 
 fn setup_logging(logging_level: &str) {
@@ -29,7 +29,7 @@ fn main() {
 
     let log_level = match debug {
         true => "debug",
-        _ => "info"
+        _ => "info",
     };
     setup_logging(log_level);
 
@@ -49,8 +49,7 @@ fn main() {
     debug!("repo_datafile {}", repo_datafile);
     debug!("repos {:?}", repos);
 
-    let mut _app = App::new(repo,
-                            repo_datafile);
+    let mut _app = App::new(repo, repo_datafile);
 
     if matches.subcommand_matches("generate_json_file").is_some() {
         _app.generate_submodules_json_datafile().unwrap();
@@ -58,4 +57,3 @@ fn main() {
         _app.clone_repos().unwrap();
     }
 }
-
